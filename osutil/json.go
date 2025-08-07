@@ -5,7 +5,6 @@ package osutil
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
@@ -38,10 +37,5 @@ func ReadJson(path string, dest any) error {
 	}
 	defer file.Close()
 
-	err = json.NewDecoder(file).Decode(dest)
-	if err != nil {
-		return fmt.Errorf("could not read json from %q: %w", path, err)
-	}
-
-	return nil
+	return json.NewDecoder(file).Decode(dest)
 }
