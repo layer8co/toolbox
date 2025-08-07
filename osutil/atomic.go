@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 func WriteFileAtomic(path string, data []byte, perm os.FileMode) (err error) {
@@ -21,7 +22,7 @@ func WriteFileAtomic(path string, data []byte, perm os.FileMode) (err error) {
 	return err
 }
 
-func OpenFileAtomic(path string, flag int, perm os.FileMode) (_ File, err error) {
+func OpenFileAtomic(path string, flag int, perm os.FileMode) (File, error) {
 
 	f, err := CreateTemp(path, os.O_WRONLY, perm)
 	if err != nil {
@@ -30,30 +31,35 @@ func OpenFileAtomic(path string, flag int, perm os.FileMode) (_ File, err error)
 			filepath.Dir(path), err,
 		)
 	}
-	defer func() {
-		if err != nil {
-			os.Remove(f.Name())
-		}
-	}()
+
+	var once sync.Once
 
 	close := func(e *error) {
+		once.Do(func() {
 
-		if *e != nil {
-			os.Remove(f.Name())
-		}
+			if *e != nil {
+				os.Remove(f.Name())
+				return
+			}
 
-		err := f.Close()
-		if err != nil {
-			*e = fmt.Errorf("could not close temporary file %q: %w", f.Name(), err)
-		}
+			err := f.Close()
+			if err != nil {
+				os.Remove(f.Name())
+				*e = fmt.Errorf(
+					"could not close temporary file %q: %w",
+					f.Name(), err,
+				)
+			}
 
-		err = os.Rename(f.Name(), path)
-		if err != nil {
-			*e = fmt.Errorf(
-				"could not move temporary file %q to %q: %w",
-				f.Name(), path, err,
-			)
-		}
+			err = os.Rename(f.Name(), path)
+			if err != nil {
+				os.Remove(f.Name())
+				*e = fmt.Errorf(
+					"could not move temporary file %q to %q: %w",
+					f.Name(), path, err,
+				)
+			}
+		})
 	}
 
 	return File{
