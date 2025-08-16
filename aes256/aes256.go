@@ -1,7 +1,7 @@
 // Copyright 2025 the github.com/koonix/x authors.
 // SPDX-License-Identifier: Apache-2.0
 
-package secretbox
+package aes256
 
 import (
 	"crypto/aes"
@@ -21,8 +21,8 @@ const (
 
 func Encrypt(password, plaintext, additionalData []byte) []byte {
 	h := newHeader()
-	aead := getAEAD(password, h)
 	b := encodeHeader(h)
+	aead := getAEAD(password, h)
 	return aead.Seal(b, h.Nonce[:], plaintext, additionalData)
 }
 
