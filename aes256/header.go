@@ -17,14 +17,14 @@ const (
 	version       = 0
 	argonSaltSize = 16
 
-	argonMemory    = 64 * 1024
-	argonMemoryMax = 128 * 1024
+	argonMemory    = 16 * 1024
+	argonMemoryMax = 64 * 1024
 
 	argonTime    = 3
 	argonTimeMax = 10
 
 	argonThreads    = 8
-	argonThreadsMax = 128
+	argonThreadsMax = 64
 )
 
 var ErrHeaderParamsOutOfRange = errors.New("header params out of range")

@@ -25,7 +25,7 @@ type writer struct {
 	hash       hash.Hash
 	first      bool
 	done       bool
-	ciphertext []byte // buffer used for encryption.
+	ciphertext []byte // Buffer used for encryption.
 }
 
 func NewWriter(dest io.Writer, password []byte) io.WriteCloser {
