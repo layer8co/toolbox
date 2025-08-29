@@ -1,11 +1,13 @@
 // Copyright 2025 the github.com/koonix/x authors.
 // SPDX-License-Identifier: Apache-2.0
 
-package ioutil
+package rw
 
 import (
 	"io"
 )
+
+const maxConsecutiveEmptyReads = 100
 
 type FooterReader struct {
 	r          io.Reader
@@ -42,7 +44,7 @@ func NewFooterReader(r io.Reader, footer []byte, extra ...[]byte) *FooterReader 
 
 func (r *FooterReader) Read(b []byte) (int, error) {
 
-	e := 0
+	i := 0
 	for r.footerSize != len(r.footer) {
 		x := len(r.footer) - r.footerSize
 		n, err := r.r.Read(r.footer[:x])
@@ -55,11 +57,11 @@ func (r *FooterReader) Read(b []byte) (int, error) {
 			return 0, err
 		}
 		if n == 0 {
-			e++
+			i++
 		} else {
-			e = 0
+			i = 0
 		}
-		if e >= maxConsecutiveEmptyReads {
+		if i >= maxConsecutiveEmptyReads {
 			return 0, io.ErrNoProgress
 		}
 	}

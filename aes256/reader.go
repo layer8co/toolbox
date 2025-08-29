@@ -12,8 +12,8 @@ import (
 	"hash"
 	"io"
 
-	"github.com/koonix/x/ioutil"
 	"github.com/koonix/x/must"
+	"github.com/koonix/x/rw"
 	"golang.org/x/crypto/argon2"
 )
 
@@ -22,7 +22,7 @@ var ErrBadChecksum = errors.New("bad checksum")
 const checksumLen = 32
 
 type reader struct {
-	src      *ioutil.FooterReader
+	src      *rw.FooterReader
 	stream   cipher.Stream
 	header   header
 	hash     hash.Hash
@@ -32,7 +32,7 @@ type reader struct {
 
 func NewReader(src io.Reader, password []byte) io.ReadCloser {
 	return &reader{
-		src:      ioutil.NewFooterReader(src, make([]byte, checksumLen)),
+		src:      rw.NewFooterReader(src, make([]byte, checksumLen)),
 		password: password,
 		first:    true,
 	}

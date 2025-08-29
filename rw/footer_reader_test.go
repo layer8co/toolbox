@@ -1,7 +1,7 @@
 // Copyright 2025 the github.com/koonix/x authors.
 // SPDX-License-Identifier: Apache-2.0
 
-package ioutil_test
+package rw_test
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/koonix/x/ioutil"
+	"github.com/koonix/x/rw"
 )
 
 func TestFooterReader(t *testing.T) {
@@ -60,7 +60,7 @@ func TestFooterReader(t *testing.T) {
 	for i, test := range tests {
 		t.Run(fmt.Sprintf("test%d-line%d", i, test.line), func(t *testing.T) {
 
-			r := ioutil.NewFooterReader(strings.NewReader(test.stream), make([]byte, test.footerLen))
+			r := rw.NewFooterReader(strings.NewReader(test.stream), make([]byte, test.footerLen))
 
 			for i, read := range test.reads {
 				t.Run(fmt.Sprintf("read%d-line%d", i, read.line), func(t *testing.T) {
