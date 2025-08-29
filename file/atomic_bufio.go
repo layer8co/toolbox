@@ -81,3 +81,19 @@ func (f *AtomicBufioFile) WriteRune(r rune) (size int, err error) {
 func (f *AtomicBufioFile) ReadFrom(r io.Reader) (int64, error) {
 	return f.w.ReadFrom(r)
 }
+
+func (f *AtomicBufioFile) Seek(offset int64, whence int) (int64, error) {
+	err := f.w.Flush()
+	if err != nil {
+		return 0, fmt.Errorf("could not flush the buffer: %w", err)
+	}
+	return f.File.Seek(offset, whence)
+}
+
+func (f *AtomicBufioFile) Sync() error {
+	err := f.w.Flush()
+	if err != nil {
+		return fmt.Errorf("could not flush the buffer: %w", err)
+	}
+	return f.File.Sync()
+}
