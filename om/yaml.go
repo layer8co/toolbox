@@ -1,7 +1,7 @@
 // Copyright 2025 the github.com/koonix/x authors.
 // SPDX-License-Identifier: Apache-2.0
 
-package kv
+package om
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 	"go.yaml.in/yaml/v4"
 )
 
-func (v Kv[K, V]) MarshalYAML() (any, error) {
+func (m Map[K, V]) MarshalYAML() (any, error) {
 
 	node := &yaml.Node{
 		Kind: yaml.MappingNode,
 	}
 
-	for _, t := range v.s {
+	for _, t := range m.s {
 
 		key := &yaml.Node{}
 		val := &yaml.Node{}
@@ -36,7 +36,7 @@ func (v Kv[K, V]) MarshalYAML() (any, error) {
 	return node, nil
 }
 
-func (v *Kv[K, V]) UnmarshalYAML(node *yaml.Node) error {
+func (m *Map[K, V]) UnmarshalYAML(node *yaml.Node) error {
 
 	if node.Kind != yaml.MappingNode {
 		return fmt.Errorf("expected yaml mapping node, got %v", node.Kind)
@@ -57,7 +57,7 @@ func (v *Kv[K, V]) UnmarshalYAML(node *yaml.Node) error {
 			return err
 		}
 
-		v.Set(key, val)
+		m.Set(key, val)
 	}
 
 	return nil

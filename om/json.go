@@ -1,7 +1,7 @@
 // Copyright 2025 the github.com/koonix/x authors.
 // SPDX-License-Identifier: Apache-2.0
 
-package kv
+package om
 
 import (
 	"bytes"
@@ -13,12 +13,12 @@ import (
 	"github.com/koonix/x/must"
 )
 
-func (v Kv[K, V]) MarshalJSON() ([]byte, error) {
+func (m Map[K, V]) MarshalJSON() ([]byte, error) {
 
 	b := new(bytes.Buffer)
 	b.WriteByte('{')
 
-	for i, t := range v.s {
+	for i, t := range m.s {
 
 		if i > 0 {
 			b.WriteByte(',')
@@ -55,7 +55,7 @@ func (v Kv[K, V]) MarshalJSON() ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-func (v *Kv[K, V]) UnmarshalJSON(b []byte) error {
+func (m *Map[K, V]) UnmarshalJSON(b []byte) error {
 
 	dec := json.NewDecoder(bytes.NewReader(b))
 
@@ -96,7 +96,7 @@ func (v *Kv[K, V]) UnmarshalJSON(b []byte) error {
 			return err
 		}
 
-		v.Set(key, val)
+		m.Set(key, val)
 	}
 
 	t, err = dec.Token()
