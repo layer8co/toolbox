@@ -4,6 +4,7 @@
 package kv
 
 import (
+	"iter"
 	"slices"
 )
 
@@ -51,6 +52,36 @@ func (v Kv[K, V]) Map() map[K]V {
 		m[t.key] = t.val
 	}
 	return m
+}
+
+func (v Kv[K, V]) All() iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		for _, t := range v.s {
+			if !yield(t.key, t.val) {
+				return
+			}
+		}
+	}
+}
+
+func (v Kv[K, V]) Keys() iter.Seq[K] {
+	return func(yield func(K) bool) {
+		for _, t := range v.s {
+			if !yield(t.key) {
+				return
+			}
+		}
+	}
+}
+
+func (v Kv[K, V]) Values() iter.Seq[V] {
+	return func(yield func(V) bool) {
+		for _, t := range v.s {
+			if !yield(t.val) {
+				return
+			}
+		}
+	}
 }
 
 func (v Kv[K, V]) index(key K) int {
