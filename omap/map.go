@@ -11,10 +11,10 @@ import (
 
 // Map is an ordered map.
 type Map[K comparable, V any] struct {
-	*c[K, V]
+	*_map[K, V]
 }
 
-type c[K comparable, V any] struct {
+type _map[K comparable, V any] struct {
 	s []tuple[K, V]
 }
 
@@ -23,9 +23,19 @@ type tuple[K comparable, V any] struct {
 	val V
 }
 
+func New[K comparable, V any](size ...int) Map[K, V] {
+	m := Map[K, V]{
+		_map: new(_map[K, V]),
+	}
+	if len(size) > 0 {
+		m.s = make([]tuple[K, V], 0, size[0])
+	}
+	return m
+}
+
 func (m *Map[K, V]) init() {
-	if m.c == nil {
-		m.c = new(c[K, V])
+	if m._map == nil {
+		m._map = new(_map[K, V])
 	}
 }
 
