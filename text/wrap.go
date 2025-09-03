@@ -14,7 +14,7 @@ func Wrap[Dst, Src ~[]byte | ~string](src Src, limit int) Dst {
 	}
 	n := limit
 	i := 0
-	for len(src) > 0 {
+	for i < len(src) {
 		dst = append(dst, src[i])
 		i++
 		n--
