@@ -11,12 +11,22 @@ import (
 
 // Map is an ordered map.
 type Map[K comparable, V any] struct {
+	*c[K, V]
+}
+
+type c[K comparable, V any] struct {
 	s []tuple[K, V]
 }
 
 type tuple[K comparable, V any] struct {
 	key K
 	val V
+}
+
+func (m *Map[K, V]) init() {
+	if m.c == nil {
+		m.c = new(c[K, V])
+	}
 }
 
 func (m Map[K, V]) Get(key K) (val V, has bool) {

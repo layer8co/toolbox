@@ -56,6 +56,8 @@ func (m Map[K, V]) MarshalJSON() ([]byte, error) {
 
 func (m *Map[K, V]) UnmarshalJSON(b []byte) error {
 
+	m.init()
+
 	dec := json.NewDecoder(bytes.NewReader(b))
 
 	t, err := dec.Token()

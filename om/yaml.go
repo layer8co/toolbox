@@ -38,6 +38,8 @@ func (m Map[K, V]) MarshalYAML() (any, error) {
 
 func (m *Map[K, V]) UnmarshalYAML(node *yaml.Node) error {
 
+	m.init()
+
 	if node.Kind != yaml.MappingNode {
 		return fmt.Errorf("expected yaml mapping node, got %v", node.Kind)
 	}
