@@ -7,7 +7,7 @@ import (
 	"github.com/koonix/x/internal/noalloc"
 )
 
-func Wrap[Dst, Src ~[]byte | ~string](src Src, limit int) Dst {
+func Wrap[Out, In ~string | ~[]byte](src In, limit int) Out {
 	dst := make([]byte, 0, len(src)+(len(src)/limit))
 	if limit <= 0 {
 		panic("Wrap: limit <= 0")
@@ -23,5 +23,5 @@ func Wrap[Dst, Src ~[]byte | ~string](src Src, limit int) Dst {
 			n = limit
 		}
 	}
-	return noalloc.FromBytes[Dst](dst)
+	return noalloc.ConvertBytes[Out](dst)
 }

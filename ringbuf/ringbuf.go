@@ -36,7 +36,7 @@ func (x *Buffer) WriteString(s string) (int, error) {
 	return write(x, s)
 }
 
-func write[T []byte | string](x *Buffer, b T) (int, error) {
+func write[T string | []byte](x *Buffer, b T) (int, error) {
 
 	if len(b) == 0 {
 		return 0, nil

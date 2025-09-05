@@ -16,14 +16,14 @@ type Encoding interface {
 	Decode(dst, src []byte) (int, error)
 }
 
-func Encode[Dst, Src ~[]byte | ~string](enc Encoding, src Src) Dst {
+func Encode[Out, In ~string | ~[]byte](enc Encoding, src In) Out {
 	dst := make([]byte, enc.EncodedLen(len(src)))
 	enc.Encode(dst, []byte(src))
-	return noalloc.FromBytes[Dst](dst)
+	return noalloc.ConvertBytes[Out](dst)
 }
 
-func Decode[Dst, Src ~[]byte | ~string](enc Encoding, src Src) (Dst, error) {
+func Decode[Out, In ~string | ~[]byte](enc Encoding, src In) (Out, error) {
 	dst := make([]byte, base64.StdEncoding.DecodedLen(len(src)))
 	_, err := enc.Decode(dst, []byte(src))
-	return noalloc.FromBytes[Dst](dst), err
+	return noalloc.ConvertBytes[Out](dst), err
 }
