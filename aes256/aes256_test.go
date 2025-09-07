@@ -31,41 +31,79 @@ func TestEncryptDecrypt(t *testing.T) {
 
 func BenchmarkWrite(b *testing.B) {
 
-	w := aes256.NewWriter(io.Discard, []byte("mypass123"))
-	txt := []byte("hello world")
+	password := []byte("mypass123")
+	plaintext := []byte("hello world")
+
+	w := aes256.NewWriter(io.Discard, password)
 
 	b.ResetTimer()
 
 	for b.Loop() {
-		w.Write(txt)
+		w.Write(plaintext)
 	}
 }
 
 func BenchmarkRead(b *testing.B) {
 
 	password := []byte("mypass123")
+	ciphertextBuf := new(bytes.Buffer)
 
-	buf := new(bytes.Buffer)
-	w := aes256.NewWriter(buf, password)
+	w := aes256.NewWriter(ciphertextBuf, password)
 	w.Write([]byte("hello world"))
-	x := &reader{
-		b: buf.Bytes(),
+
+	rr := &repeatReader{
+		b: ciphertextBuf.Bytes(),
 	}
 
-	r := aes256.NewReader(x, password)
-	buf2 := make([]byte, buf.Len())
+	r := aes256.NewReader(rr, password)
+	readBuf := make([]byte, ciphertextBuf.Len())
 
 	b.ResetTimer()
 
 	for b.Loop() {
-		must.Get(r.Read(buf2))
+		must.Get(r.Read(readBuf))
 	}
 }
 
-type reader struct {
+func BenchmarkEncrypt(b *testing.B) {
+
+	password := []byte("mypass123")
+	plaintext := []byte("hello world")
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		aes256.Encrypt(plaintext, password)
+	}
+
+	b.ReportMetric(
+		float64(b.Elapsed().Milliseconds())/float64(b.N),
+		"ms/op",
+	)
+}
+
+func BenchmarkDecrypt(b *testing.B) {
+
+	password := []byte("mypass123")
+	plaintext := []byte("hello world")
+	ciphertext := aes256.Encrypt(plaintext, password)
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		aes256.Decrypt(ciphertext, password)
+	}
+
+	b.ReportMetric(
+		float64(b.Elapsed().Milliseconds())/float64(b.N),
+		"ms/op",
+	)
+}
+
+type repeatReader struct {
 	b []byte
 }
 
-func (r *reader) Read(b []byte) (int, error) {
+func (r *repeatReader) Read(b []byte) (int, error) {
 	return copy(b, r.b), nil
 }
