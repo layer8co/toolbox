@@ -7,10 +7,9 @@ require (
 	github.com/google/go-cmp v0.7.0
 	github.com/shirou/gopsutil/v4 v4.25.8
 	go.yaml.in/yaml/v4 v4.0.0-rc.2
-	golang.org/x/crypto v0.41.0
+	golang.org/x/crypto v0.45.0
 	golang.org/x/exp v0.0.0-20251009144603-d2f985daa21b
-	golang.org/x/sys v0.37.0
-	golang.org/x/tools v0.38.0
+	golang.org/x/sys v0.38.0
 )
 
 require (
@@ -21,6 +20,4 @@ require (
 	github.com/tklauser/go-sysconf v0.3.15 // indirect
 	github.com/tklauser/numcpus v0.10.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	golang.org/x/mod v0.29.0 // indirect
-	golang.org/x/sync v0.17.0 // indirect
 )
