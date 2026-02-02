@@ -14,6 +14,8 @@ import (
 	"unsafe"
 )
 
+const bufPoolMaxSize = 1024
+
 var bufPool = sync.Pool{
 	New: func() any {
 		return &[]byte{}
@@ -36,7 +38,7 @@ func open(
 	*buf = slices.Grow(*buf, len(path)+1)
 	*buf = append(*buf, path...)
 	*buf = append(*buf, 0)
-	if len(*buf) <= 4096 {
+	if len(*buf) <= bufPoolMaxSize {
 		defer func() {
 			*buf = (*buf)[0:]
 			bufPool.Put(buf)
