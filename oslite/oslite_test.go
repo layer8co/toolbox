@@ -4,11 +4,58 @@
 package oslite_test
 
 import (
+	"io"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/layer8co/toolbox/oslite"
 )
+
+func TestRead(t *testing.T) {
+
+	temp, err := os.CreateTemp("", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		temp.Close()
+		os.Remove(temp.Name())
+	}()
+
+	text := "hello world"
+
+	_, err = temp.WriteString(text)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	f, err := oslite.Open(temp.Name())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+
+	buf := make([]byte, 4)
+	sb := new(strings.Builder)
+	err = nil
+
+	for err != io.EOF {
+		var n int
+		n, err = f.Read(buf)
+		if err != io.EOF && err != nil {
+			t.Fatal(err)
+		}
+		sb.Write(buf[:n])
+	}
+
+	want := text
+	got := sb.String()
+
+	if want != got {
+		t.Fatalf("incorrect read: want %q, got %q", want, got)
+	}
+}
 
 func BenchmarkRead(b *testing.B) {
 
@@ -44,7 +91,7 @@ func BenchmarkRead(b *testing.B) {
 	}
 }
 
-func BenchmarkOsRead(b *testing.B) {
+func BenchmarkReadStdlib(b *testing.B) {
 
 	temp, err := os.CreateTemp("", "")
 	if err != nil {
