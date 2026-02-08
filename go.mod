@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/google/go-cmp v0.7.0
+	go.yaml.in/yaml/v4 v4.0.0-rc.4
 	golang.org/x/crypto v0.47.0
 	golang.org/x/exp v0.0.0-20260112195511-716be5621a96
 )
