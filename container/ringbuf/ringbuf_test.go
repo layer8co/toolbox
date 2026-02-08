@@ -1,3 +1,6 @@
+// Copyright 2025 the toolbox authors.
+// SPDX-License-Identifier: Apache-2.0
+
 package ringbuf_test
 
 import (
