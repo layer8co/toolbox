@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/layer8co/toolbox/oslite"
+	"github.com/layer8co/toolbox/os/oslite"
 )
 
 func TestRead(t *testing.T) {
