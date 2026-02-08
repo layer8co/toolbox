@@ -14,6 +14,8 @@ import (
 	"unsafe"
 )
 
+// TODO: Use container/bufpool once it's ready.
+
 const bufPoolMaxSize = 1024
 
 var bufPool = sync.Pool{
