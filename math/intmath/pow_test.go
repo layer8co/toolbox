@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/layer8co/toolbox/intmath"
+	"github.com/layer8co/toolbox/math/intmath"
 	"golang.org/x/exp/constraints"
 )
 
