@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/layer8co/toolbox/moreio"
+	"github.com/layer8co/toolbox/io/moreio"
 )
 
 func TestFooterReader(t *testing.T) {
