@@ -9,8 +9,20 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/layer8co/toolbox/container/bufpool"
+	bufpool "github.com/layer8co/toolbox/container/testdata/incompletepkg_bufpool"
 )
+
+// TODO: The tests need to be closer to the real world.
+// Don't just raw dog things in the benchmark loop,
+// actually create a function that utilizies the pool
+// similar to how it would be used in a real world setting.
+// Don't just measure alloc/sec; measure memory usage after GC too.
+//
+// The issue with the current benches is that the regular single-bucket pool
+// very quickly grows to the max, and so the real shrinking capabilities
+// of our stuff does not shine through.
+// Also, because the growth with slices.Grow happens chunkily,
+// the bucketed nature of our stuff doesn't show itself.
 
 func BenchmarkGetPut(b *testing.B) {
 
@@ -48,7 +60,7 @@ func BenchmarkGetPutRising(b *testing.B) {
 		for b.Loop() {
 			buf := user.Get()
 			*buf = slices.Grow(*buf, int(i))
-			user.Put(buf, len(*buf))
+			user.Put(buf, cap(*buf))
 			i++
 		}
 	})
@@ -81,7 +93,7 @@ func BenchmarkGetPutRand(b *testing.B) {
 		for b.Loop() {
 			buf := user.Get()
 			*buf = slices.Grow(*buf, randBetween(x, y))
-			user.Put(buf, len(*buf))
+			user.Put(buf, cap(*buf))
 		}
 	})
 
@@ -107,6 +119,13 @@ func randBetween(a, b int) int {
 	}
 	return rand.IntN(b-a+1) + a
 }
+
+// func grow[T any](b []T, n int) []T {
+// 	if cap(b) >= n {
+// 		return b[:n]
+// 	}
+// 	return make([]T, n)
+// }
 
 // func BenchmarkPoolCap(b *testing.B) {
 //
