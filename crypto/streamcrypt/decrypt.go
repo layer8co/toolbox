@@ -147,6 +147,9 @@ func (d *Decryptor) readHeader() error {
 		return err
 	}
 
+	// TODO: Utilize runtime/secret if or when it becomes available.
+	// https://go.dev/doc/go1.26#new-experimental-runtimesecret-package
+
 	password, err := d.passFunc()
 	if err != nil {
 		return fmt.Errorf("could not retrieve password: %w", err)

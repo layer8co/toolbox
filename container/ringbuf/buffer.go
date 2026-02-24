@@ -26,6 +26,8 @@ import (
 //       Do we jettison the newest data? The oldest data?
 //
 //   - Add Seek().
+//
+//   - Add Peek()? https://go.dev/doc/go1.26#bytespkgbytes
 
 var ErrNegativeOffset = errors.New("negative offset")
 
